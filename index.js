@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config() // default dotenv config
 const app = express();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000;
 
 
@@ -44,6 +44,10 @@ async function run() {
         const result = await cursor.toArray();
         res.send(result);
     })
+
+
+    // Update the data from the database and show it to the UI
+    
     
     // Get data from the client
     app.post('/coffee', async (req, res) => {
@@ -51,6 +55,15 @@ async function run() {
       console.log(newCoffee);
       const result = await coffeeCollection.insertOne(newCoffee);
       res.send(result);
+  })
+
+
+  // Delete data from the client
+  app.delete('/coffee/:id', async (req, res) => {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id)}; // follow the mongodb example
+    const result = await coffeeCollection.deleteOne(query); // follow the mongodb example
+    res.send(result);
   })
 
     // Send a ping to confirm a successful connection
